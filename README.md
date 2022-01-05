@@ -3,12 +3,12 @@
 
 ## Technology:
 * IDE: SQLyog
-* Language: sql
+* Language: SQL
 
 
 ## Prerequisites:
 1. Install Xampp
-2. Install any SQl IDE
+2. Install any SQL IDE
 
 
 ## Requirement:
