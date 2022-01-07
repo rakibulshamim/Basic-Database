@@ -1,48 +1,69 @@
-/*
-SQLyog Professional v13.1.1 (32 bit)
-MySQL - 10.4.22-MariaDB : Database - class_one_assignment
-*********************************************************************
-*/
+-- Create a Database Named class_one_assignment
+CREATE DATABASE class_one_assignment;
 
-/*!40101 SET NAMES utf8 */;
+USE class_one_assignment;
 
-/*!40101 SET SQL_MODE=''*/;
+-- Create a Table Named Customers.
+CREATE TABLE Customers(
+Customer_ID INT AUTO_INCREMENT,
+First_Name VARCHAR(50) NOT NULL,
+Last_Name VARCHAR(50) NOT NULL,
+Date_of_Birth DATE,
+Phone VARCHAR(50),
+Address VARCHAR(50) NOT NULL,
+City VARCHAR(50),
+State VARCHAR(50),
+Points FLOAT(50),
+PRIMARY KEY(Customer_ID)
+);
 
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`class_one_assignment` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+SELECT * FROM Customers;
 
-USE `class_one_assignment`;
+DROP TABLE Customers;
 
-/*Table structure for table `customers` */
+ALTER TABLE Customers AUTO_INCREMENT = 101;
 
-DROP TABLE IF EXISTS `customers`;
+--  Insert Customer Data:
+INSERT INTO Customers(First_Name, Last_Name, Date_of_Birth, Phone, Address, City, State, Points)
+VALUES('Babara', 'MacCaffrey', '1986-03-28', '781-932-9754', '0 Sage Terrace', 'Waltham', 'MA', '2273'),
+('Ines', 'Brushfield', '1986-04-13', '804-427-9456', '14187 Commercial Trail', 'Hampton', 'VA', '947'),
+('Freddi', 'Boagey', '1985-02-07', '719-724-7869', '251 Springs Junction', 'Colorado Springs', 'CO', '2967'),
+('Ambur', 'Roseburgh', '1974-04-14', '407-231-8017', '30 Arapahoe Terrace', 'Orlando', 'FL', '457'),
+('Clemmie', 'Betchley', '1973-11-07', '','5 Spohn Circle', 'Arlington', 'TX', '3675');
 
-CREATE TABLE `customers` (
-  `Customer_ID` int(11) NOT NULL AUTO_INCREMENT,
-  `First_Name` varchar(50) NOT NULL,
-  `Last_Name` varchar(50) NOT NULL,
-  `Date_of_Birth` date DEFAULT NULL,
-  `Phone` varchar(50) DEFAULT NULL,
-  `Address` varchar(50) NOT NULL,
-  `City` varchar(50) DEFAULT NULL,
-  `State` varchar(50) DEFAULT NULL,
-  `Points` double DEFAULT NULL,
-  PRIMARY KEY (`Customer_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=utf8mb4;
+-- Show only 2 members whose points are more than 1000.
+SELECT * FROM Customers WHERE Points>1000 ORDER BY Points LIMIT 2;
 
-/*Data for the table `customers` */
+-- Find the customers whose age is in 1980 to 1990 or points less than 1000.
+SELECT * FROM Customers WHERE (Date_of_Birth BETWEEN '1980-01-01' AND '1990-12-31') OR Points IN(SELECT Points FROM Customers WHERE Points<1000);
 
-insert  into `customers`(`Customer_ID`,`First_Name`,`Last_Name`,`Date_of_Birth`,`Phone`,`Address`,`City`,`State`,`Points`) values 
-(101,'Babara','MacCaffrey','1986-03-28','781-932-9754','0 Sage Terrace','Waltham','MA',2273),
-(102,'Ines','Brushfield','1986-04-13','804-427-9456','14187 Commercial Trail','Hampton','VA',947),
-(103,'Freddi','Boagey','1985-02-07','719-724-7869','251 Springs Junction','Colorado Springs','CO',2967),
-(104,'Ambur','Roseburgh','1974-04-14','407-231-8017','30 Arapahoe Terrace','Orlando','FL',457),
-(105,'Clemmie','Betchley','1973-11-07','','5 Spohn Circle','Arlington','TX',3675);
+-- Order the customers by points in ascending and descending order.
+SELECT * FROM Customers ORDER BY Points ASC;
+SELECT * FROM Customers ORDER BY Points DESC;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+-- Find the customer whose name contains 'burgh' using like and regexp.
+SELECT * FROM Customers WHERE Last_Name LIKE '%burgh%';
+SELECT * FROM Customers WHERE Last_Name REGEXP 'burgh';
+
+-- Find the customer who does not have phone number.
+SELECT * FROM Customers WHERE Phone = ' ';
+
+-- Change the 'Date of Birth' column name into 'dob'.
+ALTER TABLE Customers CHANGE COLUMN Date_of_Birth dob DATE;
+
+-- Find the max point holder customer.
+SELECT * FROM Customers WHERE Points=(SELECT MAX(Points)FROM Customers);
+
+-- Execute a query for the following scenario-
+-- 	If customers have points less than 1000, they are bronze member.
+-- 	If customers have points more than 1000 and less than 2000, they are silver member.
+-- 	If customers have points more than 2000 and less than 3000, they are gold member.
+-- 	If customers have points more than 3000, they are platinum member.
+SELECT Customer_ID, First_Name, Last_Name, Points,
+CASE 
+	WHEN Points<1000 THEN 'bronze member'
+	WHEN Points BETWEEN 1001 AND 1999 THEN 'silver member'
+	WHEN Points BETWEEN 2001 AND 2999 THEN 'gold member'
+	WHEN Points>3000 THEN 'platinum member'
+END AS Membership_Levels FROM Customers ORDER BY Points;
+
