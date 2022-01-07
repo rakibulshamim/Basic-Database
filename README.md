@@ -19,4 +19,4 @@
 
 ## How to run this file:
 1. Clone sql file to Any Folder
-2. Import sql file.
+2.Open sql file with any SQL IDE.
